@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <Bamboo/Base.hpp>
 
 namespace Panda {
 
@@ -29,7 +30,7 @@ struct ScriptClassManifest final {
 
     ScriptFieldManifest getField(const char *name) const {
         for (auto &field : fields) {
-            if (strcmp(field.name, name) == 0) {
+            if (Bamboo::strCmp(field.name, name) == 0) {
                 return field;
             }
         }
@@ -46,7 +47,7 @@ struct ScriptBundleManifest final {
 
     ScriptClassManifest getClass(const char *name) const {
         for (auto &clazz : classes) {
-            if (strcmp(clazz.name, name) == 0) {
+            if (Bamboo::strCmp(clazz.name, name) == 0) {
                 return clazz;
             }
         }

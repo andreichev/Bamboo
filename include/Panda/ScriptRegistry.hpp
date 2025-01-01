@@ -6,6 +6,7 @@
 #include "ScriptClass.hpp"
 
 #include <unordered_map>
+#include <cstring>
 
 namespace Panda {
 
@@ -24,26 +25,20 @@ public:
     std::unordered_map<ScriptInstanceHandle, Bamboo::Script *> m_instances;
 
     template<typename T>
-    ScriptFieldType getType() = delete;
-
-    template<>
-    ScriptFieldType getType<int>() {
-        return ScriptFieldType::INTEGER;
-    }
-
-    template<>
-    ScriptFieldType getType<float>() {
-        return ScriptFieldType::FLOAT;
-    }
-
-    template<>
-    ScriptFieldType getType<Bamboo::Entity>() {
-        return ScriptFieldType::ENTITY;
-    }
-
-    template<>
-    ScriptFieldType getType<Bamboo::Texture>() {
-        return ScriptFieldType::TEXTURE;
+    ScriptFieldType getType() {
+        if constexpr (std::is_same_v<T, int>) {
+            return ScriptFieldType::INTEGER;
+        }
+        if constexpr (std::is_same_v<T, float>) {
+            return ScriptFieldType::FLOAT;
+        }
+        if constexpr (std::is_same_v<T, Bamboo::Entity>) {
+            return ScriptFieldType::ENTITY;
+        }
+        if constexpr (std::is_same_v<T, Bamboo::Texture>) {
+            return ScriptFieldType::TEXTURE;
+        }
+        return ScriptFieldType::UNKNOWN;
     }
 
     template<typename FieldType>
@@ -114,7 +109,7 @@ public:
     ScriptInstanceHandle instantiate(Bamboo::Entity entity, const char *name) {
         for (ScriptClassHandle classId = 0; classId < m_scriptClasses.size(); classId++) {
             ScriptClass &clazz = m_scriptClasses[classId];
-            if (strcmp(name, clazz.name) == 0) {
+            if (Bamboo::strCmp(name, clazz.name) == 0) {
                 m_lastHandle++;
                 m_instances[m_lastHandle] = (Bamboo::Script *)clazz.instantiateFunc(entity);
                 m_instances[m_lastHandle]->m_classHandle = classId;
