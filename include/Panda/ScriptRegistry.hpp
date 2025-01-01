@@ -1,9 +1,9 @@
 #pragma once
 
-#include "ScriptClass.hpp"
-#include "Panda/Base.hpp"
 #include "Bamboo/Script.hpp"
 #include "Bamboo/Texture.hpp"
+#include "Panda/Base.hpp"
+#include "ScriptClass.hpp"
 
 #include <unordered_map>
 

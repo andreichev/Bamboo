@@ -2,10 +2,10 @@
 // Created by Michael Andreichev on 02.08.2024.
 //
 
-#include "Panda/ScriptRegistry.hpp"
 #include "Panda/OuterScriptHook.hpp"
-#include "Panda/ScriptClassMaper.hpp"
 #include "Panda/Manifest/ScriptBundleManifest.hpp"
+#include "Panda/ScriptClassMaper.hpp"
+#include "Panda/ScriptRegistry.hpp"
 
 #include <iostream>
 
