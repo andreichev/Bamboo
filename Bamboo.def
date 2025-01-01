@@ -1,0 +1,4 @@
+LIBRARY Bamboo
+EXPORTS
+    loadInternalCall
+    loadExternalCalls
