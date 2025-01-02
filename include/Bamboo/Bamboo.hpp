@@ -28,11 +28,12 @@ struct AutoRegisterScriptClass {
 #define PANDA_FIELDS_BEGIN(classType)                                                              \
     static std::unordered_map<Panda::FieldHandle, Panda::ScriptFieldInfo> getFields() {            \
         using ClassType = classType;                                                               \
+        int index = 1;                                                                             \
         std::unordered_map<Panda::FieldHandle, Panda::ScriptFieldInfo> fields;
 
 #define PANDA_FIELD(name)                                                                          \
     fields.emplace(                                                                                \
-        std::hash<std::string_view>()(#name),                                                      \
+        index++,                                                                                   \
         Panda::getScriptRegistry()->makeFieldInfo<decltype(name)>(                                 \
             #name, Panda::offsetOf(&ClassType::name)                                               \
         )                                                                                          \
