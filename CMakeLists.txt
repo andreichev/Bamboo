@@ -13,6 +13,7 @@ file(GLOB_RECURSE SOURCES src/*.cpp)
 file(GLOB_RECURSE INCLUDE include/*.hpp)
 
 add_library(Bamboo STATIC "${SOURCES}" Bamboo.def "${INCLUDE}")
+target_compile_options(Bamboo PUBLIC -fPIC)
 
 set_target_properties(Bamboo
         PROPERTIES
