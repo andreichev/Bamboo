@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef USE_STDFORMAT
-#include <format>
+#    include <format>
 #endif
 #include <string_view>
 

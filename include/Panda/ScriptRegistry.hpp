@@ -2,6 +2,7 @@
 
 #include "Bamboo/Script.hpp"
 #include "Bamboo/Texture.hpp"
+#include "Bamboo/Material.hpp"
 #include "Panda/Base.hpp"
 #include "ScriptClass.hpp"
 
@@ -37,6 +38,9 @@ public:
         }
         if constexpr (std::is_same_v<T, Bamboo::Texture>) {
             return ScriptFieldType::TEXTURE;
+        }
+        if constexpr (std::is_same_v<T, Bamboo::Material>) {
+            return ScriptFieldType::MATERIAL;
         }
         return ScriptFieldType::UNKNOWN;
     }

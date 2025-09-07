@@ -24,9 +24,9 @@ void SpriteRendererComponent::setCell(int cols, int rows, int index) {
     Panda::ExternalCalls::spriteRendererComponent_SetCell(entityHandle, cols, rows, index);
 }
 
-void SpriteRendererComponent::setTexture(Texture texture) {
+void SpriteRendererComponent::setMaterial(Material material) {
     Panda::EntityHandle entityHandle = getEntity().getId();
-    Panda::ExternalCalls::spriteRendererComponent_SetTexture(entityHandle, texture.getId());
+    Panda::ExternalCalls::spriteRendererComponent_SetMaterial(entityHandle, material.getId());
 }
 
 } // namespace Bamboo

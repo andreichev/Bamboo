@@ -61,9 +61,9 @@ namespace ExternalCalls {
     using SpriteRendererComponent_SetColor =
         void (*)(EntityHandle entityId, float r, float g, float b, float a);
     extern SpriteRendererComponent_SetColor spriteRendererComponent_SetColor;
-    using SpriteRendererComponent_SetTexture =
-        void (*)(EntityHandle entityId, TextureHandle textureId);
-    extern SpriteRendererComponent_SetTexture spriteRendererComponent_SetTexture;
+    using SpriteRendererComponent_SetMaterial =
+            void (*)(EntityHandle entityId, MaterialHandle materialId);
+    extern SpriteRendererComponent_SetMaterial spriteRendererComponent_SetMaterial;
     using SpriteRendererComponent_SetCell =
         void (*)(EntityHandle entityId, int cols, int rows, int index);
     extern SpriteRendererComponent_SetCell spriteRendererComponent_SetCell;
@@ -85,6 +85,13 @@ namespace ExternalCalls {
     extern Rigidbody2DComponent_getFriction rigidbody2DComponent_getFriction;
     using Rigidbody2DComponent_setFriction = void (*)(EntityHandle entityId, float friction);
     extern Rigidbody2DComponent_setFriction rigidbody2DComponent_setFriction;
+    /// MATERIAL
+    using Material_SetColor =
+        void (*)(MaterialHandle materialId, const char *name, float r, float g, float b, float a);
+    extern Material_SetColor material_SetColor;
+    using Material_SetTexture =
+        void (*)(MaterialHandle materialId, const char *name, TextureHandle textureId);
+    extern Material_SetTexture material_SetTexture;
     /// LOG
     using Console_Log = void (*)(int type, const char *);
     extern Console_Log console_Log;

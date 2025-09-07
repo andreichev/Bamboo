@@ -6,6 +6,7 @@ namespace Bamboo {
 
 using EntityHandle = uint32_t;
 using TextureHandle = uint32_t;
+using MaterialHandle = uint32_t;
 
 struct Vec2 {
     union {
