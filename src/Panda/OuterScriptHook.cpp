@@ -50,8 +50,9 @@ namespace ExternalCalls {
     Rigidbody2DComponent_getFriction rigidbody2DComponent_getFriction = nullptr;
     Rigidbody2DComponent_setFriction rigidbody2DComponent_setFriction = nullptr;
     /// MATERIAL
-    Material_SetColor material_SetColor = nullptr;
-    Material_SetTexture material_SetTexture = nullptr;
+    Material_SetFloatValue material_SetFloatValue = nullptr;
+    Material_SetVec4Value material_SetVec4Value = nullptr;
+    Material_SetTextureValue material_SetTextureValue = nullptr;
     /// CONSOLE
     Console_Log console_Log = nullptr;
 } // namespace ExternalCalls
@@ -194,7 +195,7 @@ LIB_EXPORT int loadExternalCalls(SymbolsLoadFunc load) {
     spriteRendererComponent_SetColor =
         (SpriteRendererComponent_SetColor)load("spriteRendererComponent_SetColor");
     spriteRendererComponent_SetMaterial =
-            (SpriteRendererComponent_SetMaterial)load("spriteRendererComponent_SetMaterial");
+        (SpriteRendererComponent_SetMaterial)load("spriteRendererComponent_SetMaterial");
     spriteRendererComponent_SetCell =
         (SpriteRendererComponent_SetCell)load("spriteRendererComponent_SetCell");
     /// RIGIDBODY2D COMPONENT
@@ -213,8 +214,9 @@ LIB_EXPORT int loadExternalCalls(SymbolsLoadFunc load) {
     rigidbody2DComponent_setFriction =
         (Rigidbody2DComponent_setFriction)load("rigidbody2DComponent_setFriction");
     /// MATERIAL
-    material_SetColor = (Material_SetColor)load("material_SetColor");
-    material_SetTexture = (Material_SetTexture)load("material_SetTexture");
+    material_SetFloatValue = (Material_SetFloatValue)load("material_SetFloatValue");
+    material_SetVec4Value = (Material_SetVec4Value)load("material_SetVec4Value");
+    material_SetTextureValue = (Material_SetTextureValue)load("material_SetTextureValue");
     /// LOG
     console_Log = (Console_Log)load("console_Log");
     std::cout << "SCRIPT ENGINE: Outer functions binding done.\n";

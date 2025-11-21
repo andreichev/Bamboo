@@ -18,6 +18,7 @@ public:
         return m_id;
     }
 
+    void setFloat(const char *name, float value);
     void setColor(const char *name, Color color);
     void setTexture(const char *name, Texture texture);
 
