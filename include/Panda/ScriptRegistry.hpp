@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Bamboo/Script.hpp"
-#include "Bamboo/Texture.hpp"
-#include "Bamboo/Material.hpp"
+#include "Bamboo/Logger.hpp"
+#include "Bamboo/Assets/Material.hpp"
 #include "Panda/Base.hpp"
 #include "ScriptClass.hpp"
+#include "Bamboo/Allocator.hpp"
+#include "Bamboo/Base.hpp"
 
 #include <unordered_map>
 #include <cstring>
@@ -21,9 +23,22 @@ private:
         info.fields = StripType<T>::getFields();
     }
 
-public:
+    struct ScriptEntry {
+        ScriptClassHandle classHandle;
+        Bamboo::Shared<Bamboo::Script> script;
+    };
+
     std::vector<ScriptClass> m_scriptClasses;
-    std::unordered_map<ScriptInstanceHandle, Bamboo::Script *> m_instances;
+    std::unordered_map<ScriptInstanceHandle, ScriptEntry> m_instances;
+
+public:
+    ~ScriptRegistry() {
+        clear();
+    }
+
+    std::vector<ScriptClass> getClasses() {
+        return m_scriptClasses;
+    }
 
     template<typename T>
     ScriptFieldType getType() {
@@ -66,47 +81,76 @@ public:
         ScriptClass clazz;
         clazz.name = name;
         addFieldsIfHas<T>(clazz);
-        clazz.instantiateFunc = [](Bamboo::Entity entity) {
-            // TODO: Use custom allocator for script instances
-            T *script = new T();
+        clazz.instantiateFunc = [](Bamboo::Shared<Bamboo::Entity> entity) {
+            Bamboo::Shared<T> script = Bamboo::makeShared<T>();
             script->m_entity = entity;
-            return (void *)script;
+            return script;
         };
         m_scriptClasses.emplace_back(clazz);
     }
 
-    Bamboo::Script *getInstanceWithId(ScriptInstanceHandle id) {
+    ScriptEntry getEntryWithId(ScriptInstanceHandle id) {
         if (m_instances.find(id) == m_instances.end()) {
-            return nullptr;
+            return {};
         }
         return m_instances.at(id);
     }
 
     void setFieldValue(ScriptInstanceHandle scriptId, FieldHandle fieldId, void *value) {
-        Bamboo::Script *script = getInstanceWithId(scriptId);
-        // PND_ASSERT(script, "Invalid script instance id");
-        ScriptClassHandle classHandle = script->m_classHandle;
+        ScriptEntry scriptEntry = getEntryWithId(scriptId);
+        // PND_ASSERT(scriptEntry.script, "Invalid script instance id");
+        ScriptClassHandle classHandle = scriptEntry.classHandle;
         // PND_ASSERT(classHandle >= 0 && classHandle < m_scriptClasses.size(), "Invalid class
         // handle");
         ScriptClass &clazz = m_scriptClasses[classHandle];
         // PND_ASSERT(clazz.fields.find(fieldId) != clazz.fields.end(), "Invalid field id");
         ScriptFieldInfo &info = clazz.fields.at(fieldId);
-        void *ptr = addOffset(script, info.offset);
-        memcpy(ptr, value, info.size);
+        void *fieldPtr = addOffset(scriptEntry.script.get(), info.offset);
+        switch (info.type) {
+            case ScriptFieldType::INTEGER:
+            case ScriptFieldType::FLOAT: {
+                memcpy(fieldPtr, value, info.size);
+                break;
+            }
+            case ScriptFieldType::ENTITY: {
+                using FieldType = Bamboo::Entity;
+                uint32_t *id = (uint32_t *)value;
+                FieldType value = FieldType(*id);
+                FieldType *field = static_cast<FieldType *>(fieldPtr);
+                *field = value;
+                break;
+            }
+            case ScriptFieldType::TEXTURE: {
+                using FieldType = Bamboo::Texture;
+                uint32_t *id = (uint32_t *)value;
+                FieldType value = FieldType(*id);
+                FieldType *field = static_cast<FieldType *>(fieldPtr);
+                *field = value;
+                break;
+            }
+            case ScriptFieldType::MATERIAL: {
+                using FieldType = Bamboo::Material;
+                uint32_t *id = (uint32_t *)value;
+                FieldType value = FieldType(*id);
+                FieldType *field = static_cast<FieldType *>(fieldPtr);
+                *field = value;
+                break;
+            }
+            case ScriptFieldType::UNKNOWN: {
+                LOG_ERROR("BAMBOO: UNKNOWN FIELD TYPE: %d", info.type);
+                break;
+            }
+        }
     }
 
     void removeScriptId(ScriptInstanceHandle id) {
         if (m_instances.find(id) == m_instances.end()) {
             return;
         }
-        delete m_instances.at(id);
         m_instances.erase(id);
     }
 
     void clear() {
-        for (auto instance : m_instances) {
-            delete instance.second;
-        }
         m_instances.clear();
     }
 
@@ -115,16 +159,12 @@ public:
             ScriptClass &clazz = m_scriptClasses[classId];
             if (Bamboo::strCmp(name, clazz.name) == 0) {
                 m_lastHandle++;
-                m_instances[m_lastHandle] = (Bamboo::Script *)clazz.instantiateFunc(entity);
-                m_instances[m_lastHandle]->m_classHandle = classId;
+                m_instances[m_lastHandle].script = clazz.instantiateFunc(entity);
+                m_instances[m_lastHandle].classHandle = classId;
                 return m_lastHandle;
             }
         }
         return 0;
-    }
-
-    ~ScriptRegistry() {
-        clear();
     }
 
 private:

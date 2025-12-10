@@ -2,11 +2,6 @@
 
 #include "Bamboo/Component.hpp"
 #include "Bamboo/Entity.hpp"
-#include "Panda/Base.hpp"
-
-namespace Panda {
-class ScriptRegistry;
-}
 
 namespace Bamboo {
 
@@ -20,10 +15,6 @@ public:
     virtual void endCollisionTouch(Entity other) {};
     virtual void beginSensorOverlap(Entity sensor) {};
     virtual void endSensorOverlap(Entity sensor) {};
-
-private:
-    Panda::ScriptClassHandle m_classHandle;
-    friend class Panda::ScriptRegistry;
 };
 
 } // namespace Bamboo

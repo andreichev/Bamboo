@@ -4,47 +4,47 @@
 namespace Bamboo {
 
 Vec3 TransformComponent::getPosition() {
-    Panda::EntityHandle entityHandle = getEntity().getId();
+    EntityHandle entityHandle = getEntity().getHandle();
     Vec3 result;
     Panda::ExternalCalls::transformComponent_GetPosition(
-        entityHandle, &result.x, &result.y, &result.z
+        entityHandle.id, &result.x, &result.y, &result.z
     );
     return result;
 }
 
 void TransformComponent::setPosition(Vec3 pos) {
-    Panda::EntityHandle entityHandle = getEntity().getId();
-    Panda::ExternalCalls::transformComponent_SetPosition(entityHandle, pos.x, pos.y, pos.z);
+    EntityHandle entityHandle = getEntity().getHandle();
+    Panda::ExternalCalls::transformComponent_SetPosition(entityHandle.id, pos.x, pos.y, pos.z);
 }
 
 Vec3 TransformComponent::getRotationEuler() {
-    Panda::EntityHandle entityHandle = getEntity().getId();
+    EntityHandle entityHandle = getEntity().getHandle();
     Vec3 result;
     Panda::ExternalCalls::transformComponent_GetRotationEuler(
-        entityHandle, &result.x, &result.y, &result.z
+        entityHandle.id, &result.x, &result.y, &result.z
     );
     return result;
 }
 
 void TransformComponent::setRotationEuler(Vec3 degrees) {
-    Panda::EntityHandle entityHandle = getEntity().getId();
+    EntityHandle entityHandle = getEntity().getHandle();
     Panda::ExternalCalls::transformComponent_SetRotationEuler(
-        entityHandle, degrees.x, degrees.y, degrees.z
+        entityHandle.id, degrees.x, degrees.y, degrees.z
     );
 }
 
 Vec3 TransformComponent::getScale() {
-    Panda::EntityHandle entityHandle = getEntity().getId();
+    EntityHandle entityHandle = getEntity().getHandle();
     Vec3 result;
     Panda::ExternalCalls::transformComponent_GetScale(
-        entityHandle, &result.x, &result.y, &result.z
+        entityHandle.id, &result.x, &result.y, &result.z
     );
     return result;
 }
 
 void TransformComponent::setScale(Vec3 scale) {
-    Panda::EntityHandle entityHandle = getEntity().getId();
-    Panda::ExternalCalls::transformComponent_SetScale(entityHandle, scale.x, scale.y, scale.z);
+    EntityHandle entityHandle = getEntity().getHandle();
+    Panda::ExternalCalls::transformComponent_SetScale(entityHandle.id, scale.x, scale.y, scale.z);
 }
 
 } // namespace Bamboo

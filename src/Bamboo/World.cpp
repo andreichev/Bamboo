@@ -4,20 +4,17 @@
 namespace Bamboo {
 
 std::optional<Entity> World::findByTag(const char *tag) {
-    Panda::EntityHandle entityId = Panda::ExternalCalls::world_FindByTag(tag);
-    if (entityId == 0) {
-        return {};
-    }
-    return Entity(entityId);
+    EntityHandle entityHandle = Panda::ExternalCalls::world_FindByTag(tag);
+    return Entity(entityHandle);
 }
 
 Entity World::createEntity(const char *tag) {
-    Panda::EntityHandle entityId = Panda::ExternalCalls::world_CreateEntity(tag);
-    return Entity(entityId);
+    EntityHandle entityHandle = Panda::ExternalCalls::world_CreateEntity(tag);
+    return Entity(entityHandle);
 }
 
 void World::destroyEntity(Entity entity) {
-    Panda::ExternalCalls::world_DestroyEntity(entity.m_id);
+    Panda::ExternalCalls::world_DestroyEntity(entity.m_handle.id);
 }
 
 } // namespace Bamboo

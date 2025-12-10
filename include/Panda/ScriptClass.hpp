@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Panda/Manifest/ScriptBundleManifest.hpp"
+#include "Bamboo/Allocator.hpp"
 
 #include <string>
 #include <unordered_map>
@@ -8,11 +9,12 @@
 
 namespace Bamboo {
 class Entity;
-}
+class Script;
+} // namespace Bamboo
 
 namespace Panda {
 
-using InstantiateFunction = void *(*)(Bamboo::Entity entity);
+using InstantiateScriptFunction = Bamboo::Shared<Bamboo::Script> (*)(Bamboo::Entity entity);
 
 struct ScriptFieldInfo final {
     constexpr ScriptFieldInfo(
@@ -33,7 +35,7 @@ struct ScriptFieldInfo final {
 
 struct ScriptClass final {
     const char *name;
-    InstantiateFunction instantiateFunc;
+    InstantiateScriptFunction instantiateFunc;
     std::unordered_map<FieldHandle, ScriptFieldInfo> fields;
 };
 

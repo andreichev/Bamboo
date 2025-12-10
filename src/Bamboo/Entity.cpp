@@ -3,14 +3,11 @@
 
 namespace Bamboo {
 
-Entity::Entity()
-    : m_id(0) {}
-
-Entity::Entity(EntityHandle id)
-    : m_id(id) {}
+Entity::Entity(EntityHandle handle)
+    : m_handle(handle) {}
 
 const char *Entity::getName() {
-    return Panda::ExternalCalls::entity_GetName(m_id);
+    return Panda::ExternalCalls::entity_GetName(m_handle.id);
 }
 
 } // namespace Bamboo

@@ -39,6 +39,7 @@ namespace ExternalCalls {
     /// SPRITE RENDERER COMPONENT
     SpriteRendererComponent_GetColor spriteRendererComponent_GetColor = nullptr;
     SpriteRendererComponent_SetColor spriteRendererComponent_SetColor = nullptr;
+    SpriteRendererComponent_GetMaterial spriteRendererComponent_GetMaterial = nullptr;
     SpriteRendererComponent_SetMaterial spriteRendererComponent_SetMaterial = nullptr;
     SpriteRendererComponent_SetCell spriteRendererComponent_SetCell = nullptr;
     /// RIGIDBODY2D COMPONENT
@@ -62,12 +63,13 @@ namespace InternalCalls {
         getScriptRegistry()->clear();
     }
 
-    ScriptInstanceHandle instantiateScript(EntityHandle entityId, const char *name) {
-        return getScriptRegistry()->instantiate(Bamboo::Entity(entityId), name);
+    ScriptInstanceHandle instantiateScript(Handle entityHandle, const char *name) {
+        Bamboo::Entity entity = Bamboo::Entity(entityHandle);
+        return getScriptRegistry()->instantiate(entity, name);
     }
 
     void invokeUpdateAtScript(ScriptInstanceHandle handle, float deltaTime) {
-        Bamboo::Script *script = getScriptRegistry()->getInstanceWithId(handle);
+        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
@@ -76,7 +78,7 @@ namespace InternalCalls {
     }
 
     void invokeStartAtScript(ScriptInstanceHandle handle) {
-        Bamboo::Script *script = getScriptRegistry()->getInstanceWithId(handle);
+        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
@@ -84,40 +86,40 @@ namespace InternalCalls {
         script->start();
     }
 
-    void invokeBeginCollisionTouch(ScriptInstanceHandle handle, EntityHandle entityId) {
-        Bamboo::Script *script = getScriptRegistry()->getInstanceWithId(handle);
+    void invokeBeginCollisionTouch(ScriptInstanceHandle handle, Handle entityHandle) {
+        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
         }
-        script->beginCollisionTouch(Bamboo::Entity(entityId));
+        script->beginCollisionTouch(Bamboo::Entity(entityHandle));
     }
 
-    void invokeEndCollisionTouch(ScriptInstanceHandle handle, EntityHandle entityId) {
-        Bamboo::Script *script = getScriptRegistry()->getInstanceWithId(handle);
+    void invokeEndCollisionTouch(ScriptInstanceHandle handle, Handle entityHandle) {
+        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
         }
-        script->endCollisionTouch(Bamboo::Entity(entityId));
+        script->endCollisionTouch(Bamboo::Entity(entityHandle));
     }
 
-    void invokeBeginSensorOverlap(ScriptInstanceHandle handle, EntityHandle entityId) {
-        Bamboo::Script *script = getScriptRegistry()->getInstanceWithId(handle);
+    void invokeBeginSensorOverlap(ScriptInstanceHandle handle, Handle entityHandle) {
+        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
         }
-        script->beginSensorOverlap(Bamboo::Entity(entityId));
+        script->beginSensorOverlap(Bamboo::Entity(entityHandle));
     }
 
-    void invokeEndSensorOverlap(ScriptInstanceHandle handle, EntityHandle entityId) {
-        Bamboo::Script *script = getScriptRegistry()->getInstanceWithId(handle);
+    void invokeEndSensorOverlap(ScriptInstanceHandle handle, Handle entityHandle) {
+        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
         }
-        script->endSensorOverlap(Bamboo::Entity(entityId));
+        script->endSensorOverlap(Bamboo::Entity(entityHandle));
     }
 
     void setFieldValue(ScriptInstanceHandle scriptId, FieldHandle fieldId, void *value) {
@@ -125,7 +127,7 @@ namespace InternalCalls {
     }
 
     ScriptBundleManifest getManifest() {
-        return ScriptClassMapper::getClassesManifest(getScriptRegistry()->m_scriptClasses);
+        return ScriptClassMapper::getClassesManifest(getScriptRegistry()->getClasses());
     }
 } // namespace InternalCalls
 
@@ -194,6 +196,8 @@ LIB_EXPORT int loadExternalCalls(SymbolsLoadFunc load) {
         (SpriteRendererComponent_GetColor)load("spriteRendererComponent_GetColor");
     spriteRendererComponent_SetColor =
         (SpriteRendererComponent_SetColor)load("spriteRendererComponent_SetColor");
+    spriteRendererComponent_GetMaterial =
+        (SpriteRendererComponent_GetMaterial)load("spriteRendererComponent_GetMaterial");
     spriteRendererComponent_SetMaterial =
         (SpriteRendererComponent_SetMaterial)load("spriteRendererComponent_SetMaterial");
     spriteRendererComponent_SetCell =

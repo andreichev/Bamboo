@@ -1,21 +1,20 @@
 #pragma once
 
 #include "Bamboo/Base.hpp"
-#include "Bamboo/Texture.hpp"
+#include "Bamboo/Assets/Texture.hpp"
 
 namespace Bamboo {
 
 class Material final {
 public:
-    Material();
-    Material(MaterialHandle id);
+    Material(MaterialHandle handle);
 
-    inline bool isValid() {
-        return m_id != 0;
+    bool isValid() {
+        return m_handle.isValid();
     }
 
-    inline uint32_t getId() {
-        return m_id;
+    MaterialHandle getHandle() {
+        return m_handle;
     }
 
     void setFloat(const char *name, float value);
@@ -23,7 +22,7 @@ public:
     void setTexture(const char *name, Texture texture);
 
 private:
-    MaterialHandle m_id;
+    MaterialHandle m_handle;
 };
 
 } // namespace Bamboo

@@ -3,10 +3,24 @@
 #include <cstdint>
 
 namespace Bamboo {
+#define BAMBOO_INVALID_HANDLE 0
 
-using EntityHandle = uint32_t;
-using TextureHandle = uint32_t;
-using MaterialHandle = uint32_t;
+#define BAMBOO_HANDLE(name)                                                                        \
+    struct name {                                                                                  \
+        name(uint32_t id)                                                                          \
+            : id(id) {}                                                                            \
+        name()                                                                                     \
+            : id(BAMBOO_INVALID_HANDLE) {}                                                         \
+        uint32_t id;                                                                               \
+        bool isValid() {                                                                           \
+            return id != BAMBOO_INVALID_HANDLE;                                                    \
+        }                                                                                          \
+    };
+
+BAMBOO_HANDLE(EntityHandle);
+BAMBOO_HANDLE(TextureHandle);
+BAMBOO_HANDLE(MaterialHandle);
+BAMBOO_HANDLE(MeshHandle);
 
 struct Vec2 {
     union {

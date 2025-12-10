@@ -4,29 +4,38 @@
 namespace Bamboo {
 
 Color SpriteRendererComponent::getColor() {
-    Panda::EntityHandle entityHandle = getEntity().getId();
+    EntityHandle entityHandle = getEntity().getHandle();
     Color result;
     Panda::ExternalCalls::spriteRendererComponent_GetColor(
-        entityHandle, &result.r, &result.g, &result.b, &result.a
+        entityHandle.id, &result.r, &result.g, &result.b, &result.a
     );
     return result;
 }
 
 void SpriteRendererComponent::setColor(Color color) {
-    Panda::EntityHandle entityHandle = getEntity().getId();
+    EntityHandle entityHandle = getEntity().getHandle();
     Panda::ExternalCalls::spriteRendererComponent_SetColor(
-        entityHandle, color.r, color.g, color.b, color.a
+        entityHandle.id, color.r, color.g, color.b, color.a
     );
 }
 
 void SpriteRendererComponent::setCell(int cols, int rows, int index) {
-    Panda::EntityHandle entityHandle = getEntity().getId();
-    Panda::ExternalCalls::spriteRendererComponent_SetCell(entityHandle, cols, rows, index);
+    EntityHandle entityHandle = getEntity().getHandle();
+    Panda::ExternalCalls::spriteRendererComponent_SetCell(entityHandle.id, cols, rows, index);
 }
 
 void SpriteRendererComponent::setMaterial(Material material) {
-    Panda::EntityHandle entityHandle = getEntity().getId();
-    Panda::ExternalCalls::spriteRendererComponent_SetMaterial(entityHandle, material.getId());
+    EntityHandle entityHandle = getEntity().getHandle();
+    Panda::ExternalCalls::spriteRendererComponent_SetMaterial(
+        entityHandle.isValid(), material.getHandle().id
+    );
+}
+
+Material SpriteRendererComponent::getMaterial() {
+    EntityHandle entityHandle = getEntity().getHandle();
+    Panda::Handle handle = 0;
+    Panda::ExternalCalls::spriteRendererComponent_GetMaterial(entityHandle.id, &handle);
+    return Material(handle);
 }
 
 } // namespace Bamboo

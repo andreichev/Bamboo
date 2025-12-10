@@ -6,9 +6,7 @@
 
 namespace Panda {
 
-using EntityHandle = uint32_t;
-using TextureHandle = uint32_t;
-using MaterialHandle = uint32_t;
+using Handle = uint32_t;
 using ScriptClassHandle = uint32_t;
 using ScriptInstanceHandle = uint32_t;
 using FieldHandle = uint32_t;

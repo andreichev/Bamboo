@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Bamboo/Component.hpp"
-#include "Bamboo/Material.hpp"
+#include "Bamboo/Assets/Material.hpp"
 
 namespace Bamboo {
 
@@ -11,6 +11,7 @@ public:
     void setColor(Color color);
     void setCell(int cols, int rows, int index);
     void setMaterial(Material material);
+    Material getMaterial();
 };
 
 } // namespace Bamboo
