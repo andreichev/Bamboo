@@ -3,6 +3,9 @@
 
 namespace Bamboo {
 
+Entity::Entity()
+    : m_handle(0) {}
+
 Entity::Entity(EntityHandle handle)
     : m_handle(handle) {}
 

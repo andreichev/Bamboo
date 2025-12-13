@@ -15,6 +15,7 @@ public:
     virtual void endCollisionTouch(Entity other) {};
     virtual void beginSensorOverlap(Entity sensor) {};
     virtual void endSensorOverlap(Entity sensor) {};
+    virtual void shutdown() {};
 };
 
 } // namespace Bamboo

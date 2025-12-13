@@ -7,6 +7,7 @@ namespace Bamboo {
 
 class Material final {
 public:
+    Material();
     Material(MaterialHandle handle);
 
     bool isValid() {

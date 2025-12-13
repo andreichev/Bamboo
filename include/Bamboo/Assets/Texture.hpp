@@ -6,6 +6,7 @@ namespace Bamboo {
 
 class Texture final {
 public:
+    Texture();
     Texture(TextureHandle handle);
 
     bool isValid() {

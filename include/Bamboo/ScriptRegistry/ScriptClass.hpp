@@ -1,20 +1,19 @@
 #pragma once
 
-#include "Panda/Manifest/ScriptBundleManifest.hpp"
 #include "Bamboo/Allocator.hpp"
+#include "Bamboo/Entity.hpp"
+#include "Bamboo/Script.hpp"
 
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 namespace Bamboo {
-class Entity;
-class Script;
-} // namespace Bamboo
-
-namespace Panda {
 
 using InstantiateScriptFunction = Bamboo::Shared<Bamboo::Script> (*)(Bamboo::Entity entity);
+enum class ScriptFieldType { INTEGER, FLOAT, ENTITY, TEXTURE, MATERIAL, UNKNOWN };
+using FieldHandle = uint32_t;
+using Handle = uint32_t;
 
 struct ScriptFieldInfo final {
     constexpr ScriptFieldInfo(
@@ -39,4 +38,4 @@ struct ScriptClass final {
     std::unordered_map<FieldHandle, ScriptFieldInfo> fields;
 };
 
-} // namespace Panda
+} // namespace Bamboo

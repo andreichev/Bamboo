@@ -2,11 +2,9 @@
 
 #include "Entity.hpp"
 
-namespace Panda {
-class ScriptRegistry;
-}
-
 namespace Bamboo {
+
+class ScriptRegistry;
 
 class Component {
 public:
@@ -16,7 +14,7 @@ private:
     Entity m_entity;
 
     friend class Entity;
-    friend class Panda::ScriptRegistry;
+    friend class ScriptRegistry;
 };
 
 } // namespace Bamboo

@@ -1,17 +1,15 @@
 #pragma once
 
-#include "Bamboo/Script.hpp"
+#include "Bamboo/Entity.hpp"
 #include "Bamboo/Logger.hpp"
 #include "Bamboo/Assets/Material.hpp"
-#include "Panda/Base.hpp"
-#include "ScriptClass.hpp"
 #include "Bamboo/Allocator.hpp"
-#include "Bamboo/Base.hpp"
+#include "Bamboo/ScriptRegistry/ScriptClass.hpp"
 
 #include <unordered_map>
 #include <cstring>
 
-namespace Panda {
+namespace Bamboo {
 
 class ScriptRegistry {
 private:
@@ -24,12 +22,12 @@ private:
     }
 
     struct ScriptEntry {
-        ScriptClassHandle classHandle;
+        Handle classHandle;
         Bamboo::Shared<Bamboo::Script> script;
     };
 
     std::vector<ScriptClass> m_scriptClasses;
-    std::unordered_map<ScriptInstanceHandle, ScriptEntry> m_instances;
+    std::unordered_map<Handle, ScriptEntry> m_instances;
 
 public:
     ~ScriptRegistry() {
@@ -81,25 +79,25 @@ public:
         ScriptClass clazz;
         clazz.name = name;
         addFieldsIfHas<T>(clazz);
-        clazz.instantiateFunc = [](Bamboo::Shared<Bamboo::Entity> entity) {
+        clazz.instantiateFunc = [](Bamboo::Entity entity) {
             Bamboo::Shared<T> script = Bamboo::makeShared<T>();
             script->m_entity = entity;
-            return script;
+            return Bamboo::SharedCast<Script>(script);
         };
         m_scriptClasses.emplace_back(clazz);
     }
 
-    ScriptEntry getEntryWithId(ScriptInstanceHandle id) {
+    ScriptEntry getEntryWithId(Handle id) {
         if (m_instances.find(id) == m_instances.end()) {
             return {};
         }
         return m_instances.at(id);
     }
 
-    void setFieldValue(ScriptInstanceHandle scriptId, FieldHandle fieldId, void *value) {
+    void setFieldValue(Handle scriptId, FieldHandle fieldId, void *value) {
         ScriptEntry scriptEntry = getEntryWithId(scriptId);
         // PND_ASSERT(scriptEntry.script, "Invalid script instance id");
-        ScriptClassHandle classHandle = scriptEntry.classHandle;
+        Handle classHandle = scriptEntry.classHandle;
         // PND_ASSERT(classHandle >= 0 && classHandle < m_scriptClasses.size(), "Invalid class
         // handle");
         ScriptClass &clazz = m_scriptClasses[classHandle];
@@ -143,7 +141,7 @@ public:
         }
     }
 
-    void removeScriptId(ScriptInstanceHandle id) {
+    void removeScriptId(Handle id) {
         if (m_instances.find(id) == m_instances.end()) {
             return;
         }
@@ -151,11 +149,14 @@ public:
     }
 
     void clear() {
+        for (auto [handle, instance] : m_instances) {
+            instance.script->shutdown();
+        }
         m_instances.clear();
     }
 
-    ScriptInstanceHandle instantiate(Bamboo::Entity entity, const char *name) {
-        for (ScriptClassHandle classId = 0; classId < m_scriptClasses.size(); classId++) {
+    Handle instantiate(Bamboo::Entity entity, const char *name) {
+        for (Handle classId = 0; classId < m_scriptClasses.size(); classId++) {
             ScriptClass &clazz = m_scriptClasses[classId];
             if (Bamboo::strCmp(name, clazz.name) == 0) {
                 m_lastHandle++;
@@ -168,9 +169,9 @@ public:
     }
 
 private:
-    ScriptClassHandle m_lastHandle = 0;
+    Handle m_lastHandle = 0;
 };
 
 ScriptRegistry *getScriptRegistry();
 
-} // namespace Panda
+} // namespace Bamboo

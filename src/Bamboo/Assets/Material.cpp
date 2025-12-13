@@ -3,6 +3,9 @@
 
 namespace Bamboo {
 
+Material::Material()
+    : m_handle(0) {}
+
 Material::Material(MaterialHandle handle)
     : m_handle(handle) {}
 

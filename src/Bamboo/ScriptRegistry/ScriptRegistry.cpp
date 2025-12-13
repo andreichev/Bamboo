@@ -1,10 +1,10 @@
-#include "Panda/ScriptRegistry.hpp"
+#include "Bamboo/ScriptRegistry/ScriptRegistry.hpp"
 
-namespace Panda {
+namespace Bamboo {
 
 ScriptRegistry *getScriptRegistry() {
     static ScriptRegistry globalData;
     return &globalData;
 }
 
-} // namespace Panda
+} // namespace Bamboo

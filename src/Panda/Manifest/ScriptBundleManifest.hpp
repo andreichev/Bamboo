@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Bamboo/Base.hpp"
+
 #include <vector>
-#include <Bamboo/Base.hpp>
 
 namespace Panda {
 

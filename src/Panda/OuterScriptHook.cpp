@@ -3,9 +3,9 @@
 //
 
 #include "Panda/OuterScriptHook.hpp"
-#include "Panda/Manifest/ScriptBundleManifest.hpp"
 #include "Panda/ScriptClassMaper.hpp"
-#include "Panda/ScriptRegistry.hpp"
+#include "Bamboo/ScriptRegistry/ScriptRegistry.hpp"
+#include "Bamboo/Script.hpp"
 
 #include <iostream>
 
@@ -42,34 +42,43 @@ namespace ExternalCalls {
     SpriteRendererComponent_GetMaterial spriteRendererComponent_GetMaterial = nullptr;
     SpriteRendererComponent_SetMaterial spriteRendererComponent_SetMaterial = nullptr;
     SpriteRendererComponent_SetCell spriteRendererComponent_SetCell = nullptr;
+    /// MESH COMPONENT
+    MeshComponent_GetMesh meshComponent_GetMesh = nullptr;
+    MeshComponent_SetMesh meshComponent_SetMesh = nullptr;
     /// RIGIDBODY2D COMPONENT
-    Rigidbody2DComponent_applyForce rigidbody2DComponent_applyForce = nullptr;
-    Rigidbody2DComponent_applyLinearImpulse rigidbody2DComponent_applyLinearImpulse = nullptr;
-    Rigidbody2DComponent_getLinearVelocity rigidbody2DComponent_getLinearVelocity = nullptr;
-    Rigidbody2DComponent_setLinearVelocity rigidbody2DComponent_setLinearVelocity = nullptr;
-    Rigidbody2DComponent_getMass rigidbody2DComponent_getMass = nullptr;
-    Rigidbody2DComponent_getFriction rigidbody2DComponent_getFriction = nullptr;
-    Rigidbody2DComponent_setFriction rigidbody2DComponent_setFriction = nullptr;
+    Rigidbody2DComponent_ApplyForce rigidbody2DComponent_ApplyForce = nullptr;
+    Rigidbody2DComponent_ApplyLinearImpulse rigidbody2DComponent_ApplyLinearImpulse = nullptr;
+    Rigidbody2DComponent_GetLinearVelocity rigidbody2DComponent_GetLinearVelocity = nullptr;
+    Rigidbody2DComponent_SetLinearVelocity rigidbody2DComponent_SetLinearVelocity = nullptr;
+    Rigidbody2DComponent_GetMass rigidbody2DComponent_GetMass = nullptr;
+    Rigidbody2DComponent_GetFriction rigidbody2DComponent_GetFriction = nullptr;
+    Rigidbody2DComponent_SetFriction rigidbody2DComponent_SetFriction = nullptr;
     /// MATERIAL
     Material_SetFloatValue material_SetFloatValue = nullptr;
     Material_SetVec4Value material_SetVec4Value = nullptr;
     Material_SetTextureValue material_SetTextureValue = nullptr;
+    /// MESH
+    Mesh_Create mesh_Create = nullptr;
+    Mesh_Update mesh_Update = nullptr;
+    Mesh_SetMaterial mesh_SetMaterial = nullptr;
+    Mesh_Delete mesh_Delete = nullptr;
     /// CONSOLE
     Console_Log console_Log = nullptr;
 } // namespace ExternalCalls
 
 namespace InternalCalls {
     void clear() {
-        getScriptRegistry()->clear();
+        Bamboo::getScriptRegistry()->clear();
     }
 
-    ScriptInstanceHandle instantiateScript(Handle entityHandle, const char *name) {
+    Handle instantiateScript(Handle entityHandle, const char *name) {
         Bamboo::Entity entity = Bamboo::Entity(entityHandle);
-        return getScriptRegistry()->instantiate(entity, name);
+        return Bamboo::getScriptRegistry()->instantiate(entity, name);
     }
 
-    void invokeUpdateAtScript(ScriptInstanceHandle handle, float deltaTime) {
-        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
+    void invokeUpdateAtScript(Handle handle, float deltaTime) {
+        Bamboo::Shared<Bamboo::Script> script =
+            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
@@ -77,8 +86,9 @@ namespace InternalCalls {
         script->update(deltaTime);
     }
 
-    void invokeStartAtScript(ScriptInstanceHandle handle) {
-        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
+    void invokeStartAtScript(Handle handle) {
+        Bamboo::Shared<Bamboo::Script> script =
+            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
@@ -86,8 +96,9 @@ namespace InternalCalls {
         script->start();
     }
 
-    void invokeBeginCollisionTouch(ScriptInstanceHandle handle, Handle entityHandle) {
-        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
+    void invokeBeginCollisionTouch(Handle handle, Handle entityHandle) {
+        Bamboo::Shared<Bamboo::Script> script =
+            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
@@ -95,8 +106,9 @@ namespace InternalCalls {
         script->beginCollisionTouch(Bamboo::Entity(entityHandle));
     }
 
-    void invokeEndCollisionTouch(ScriptInstanceHandle handle, Handle entityHandle) {
-        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
+    void invokeEndCollisionTouch(Handle handle, Handle entityHandle) {
+        Bamboo::Shared<Bamboo::Script> script =
+            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
@@ -104,8 +116,9 @@ namespace InternalCalls {
         script->endCollisionTouch(Bamboo::Entity(entityHandle));
     }
 
-    void invokeBeginSensorOverlap(ScriptInstanceHandle handle, Handle entityHandle) {
-        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
+    void invokeBeginSensorOverlap(Handle handle, Handle entityHandle) {
+        Bamboo::Shared<Bamboo::Script> script =
+            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
@@ -113,8 +126,9 @@ namespace InternalCalls {
         script->beginSensorOverlap(Bamboo::Entity(entityHandle));
     }
 
-    void invokeEndSensorOverlap(ScriptInstanceHandle handle, Handle entityHandle) {
-        Bamboo::Shared<Bamboo::Script> script = getScriptRegistry()->getEntryWithId(handle).script;
+    void invokeEndSensorOverlap(Handle handle, Handle entityHandle) {
+        Bamboo::Shared<Bamboo::Script> script =
+            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
         if (!script) {
             // assert(false);
             return;
@@ -122,12 +136,12 @@ namespace InternalCalls {
         script->endSensorOverlap(Bamboo::Entity(entityHandle));
     }
 
-    void setFieldValue(ScriptInstanceHandle scriptId, FieldHandle fieldId, void *value) {
-        getScriptRegistry()->setFieldValue(scriptId, fieldId, value);
+    void setFieldValue(Handle scriptId, FieldHandle fieldId, void *value) {
+        Bamboo::getScriptRegistry()->setFieldValue(scriptId, fieldId, value);
     }
 
     ScriptBundleManifest getManifest() {
-        return ScriptClassMapper::getClassesManifest(getScriptRegistry()->getClasses());
+        return ScriptClassMapper::getClassesManifest(Bamboo::getScriptRegistry()->getClasses());
     }
 } // namespace InternalCalls
 
@@ -202,25 +216,33 @@ LIB_EXPORT int loadExternalCalls(SymbolsLoadFunc load) {
         (SpriteRendererComponent_SetMaterial)load("spriteRendererComponent_SetMaterial");
     spriteRendererComponent_SetCell =
         (SpriteRendererComponent_SetCell)load("spriteRendererComponent_SetCell");
+    /// MESH COMPONENT
+    meshComponent_GetMesh = (MeshComponent_GetMesh)load("meshComponent_GetMesh");
+    meshComponent_SetMesh = (MeshComponent_SetMesh)load("meshComponent_SetMesh");
     /// RIGIDBODY2D COMPONENT
-    rigidbody2DComponent_applyForce =
-        (Rigidbody2DComponent_applyForce)load("rigidbody2DComponent_applyForce");
-    rigidbody2DComponent_applyLinearImpulse =
-        (Rigidbody2DComponent_applyLinearImpulse)load("rigidbody2DComponent_applyLinearImpulse");
-    rigidbody2DComponent_getLinearVelocity =
-        (Rigidbody2DComponent_getLinearVelocity)load("rigidbody2DComponent_getLinearVelocity");
-    rigidbody2DComponent_setLinearVelocity =
-        (Rigidbody2DComponent_setLinearVelocity)load("rigidbody2DComponent_setLinearVelocity");
-    rigidbody2DComponent_getMass =
-        (Rigidbody2DComponent_getMass)load("rigidbody2DComponent_getMass");
-    rigidbody2DComponent_getFriction =
-        (Rigidbody2DComponent_getFriction)load("rigidbody2DComponent_getFriction");
-    rigidbody2DComponent_setFriction =
-        (Rigidbody2DComponent_setFriction)load("rigidbody2DComponent_setFriction");
+    rigidbody2DComponent_ApplyForce =
+        (Rigidbody2DComponent_ApplyForce)load("rigidbody2DComponent_ApplyForce");
+    rigidbody2DComponent_ApplyLinearImpulse =
+        (Rigidbody2DComponent_ApplyLinearImpulse)load("rigidbody2DComponent_ApplyLinearImpulse");
+    rigidbody2DComponent_GetLinearVelocity =
+        (Rigidbody2DComponent_GetLinearVelocity)load("rigidbody2DComponent_GetLinearVelocity");
+    rigidbody2DComponent_SetLinearVelocity =
+        (Rigidbody2DComponent_SetLinearVelocity)load("rigidbody2DComponent_SetLinearVelocity");
+    rigidbody2DComponent_GetMass =
+        (Rigidbody2DComponent_GetMass)load("rigidbody2DComponent_GetMass");
+    rigidbody2DComponent_GetFriction =
+        (Rigidbody2DComponent_GetFriction)load("rigidbody2DComponent_GetFriction");
+    rigidbody2DComponent_SetFriction =
+        (Rigidbody2DComponent_SetFriction)load("rigidbody2DComponent_SetFriction");
     /// MATERIAL
     material_SetFloatValue = (Material_SetFloatValue)load("material_SetFloatValue");
     material_SetVec4Value = (Material_SetVec4Value)load("material_SetVec4Value");
     material_SetTextureValue = (Material_SetTextureValue)load("material_SetTextureValue");
+    /// MESH
+    mesh_Create = (Mesh_Create)load("mesh_Create");
+    mesh_Update = (Mesh_Update)load("mesh_Update");
+    mesh_SetMaterial = (Mesh_SetMaterial)load("mesh_SetMaterial");
+    mesh_Delete = (Mesh_Delete)load("mesh_Delete");
     /// LOG
     console_Log = (Console_Log)load("console_Log");
     std::cout << "SCRIPT ENGINE: Outer functions binding done.\n";

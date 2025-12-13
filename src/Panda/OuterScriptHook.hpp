@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Panda/Base.hpp"
+#include <cstdint>
 
 namespace Panda {
+
+using Handle = uint32_t;
 
 namespace ExternalCalls {
 
@@ -28,67 +30,91 @@ namespace ExternalCalls {
     using Input_IsKeyJustPressed = bool (*)(int key);
     extern Input_IsKeyJustPressed input_IsKeyJustPressed;
     /// ENTITY
-    using Entity_CreateComponent = void (*)(Handle entityId, const char *type);
+    using Entity_CreateComponent = void (*)(Handle entityHandle, const char *type);
     extern Entity_CreateComponent entity_CreateComponent;
-    using Entity_HasComponent = bool (*)(Handle entityId, const char *type);
+    using Entity_HasComponent = bool (*)(Handle entityHandle, const char *type);
     extern Entity_HasComponent entity_HasComponent;
-    using Entity_RemoveComponent = void (*)(Handle entityId, const char *type);
+    using Entity_RemoveComponent = void (*)(Handle entityHandle, const char *type);
     extern Entity_RemoveComponent entity_RemoveComponent;
-    using Entity_GetName = const char *(*)(Handle entityId);
+    using Entity_GetName = const char *(*)(Handle entityHandle);
     extern Entity_GetName entity_GetName;
     /// TRANSFORM COMPONENT
-    using TransformComponent_GetPosition = void (*)(Handle entityId, float *x, float *y, float *z);
+    using TransformComponent_GetPosition =
+        void (*)(Handle entityHandle, float *x, float *y, float *z);
     extern TransformComponent_GetPosition transformComponent_GetPosition;
-    using TransformComponent_SetPosition = void (*)(Handle entityId, float x, float y, float z);
+    using TransformComponent_SetPosition = void (*)(Handle entityHandle, float x, float y, float z);
     extern TransformComponent_SetPosition transformComponent_SetPosition;
     using TransformComponent_GetRotationEuler =
-        void (*)(Handle entityId, float *x, float *y, float *z);
+        void (*)(Handle entityHandle, float *x, float *y, float *z);
     extern TransformComponent_GetRotationEuler transformComponent_GetRotationEuler;
     using TransformComponent_SetRotationEuler =
-        void (*)(Handle entityId, float x, float y, float z);
+        void (*)(Handle entityHandle, float x, float y, float z);
     extern TransformComponent_SetRotationEuler transformComponent_SetRotationEuler;
-    using TransformComponent_GetScale = void (*)(Handle entityId, float *x, float *y, float *z);
+    using TransformComponent_GetScale = void (*)(Handle entityHandle, float *x, float *y, float *z);
     extern TransformComponent_GetScale transformComponent_GetScale;
-    using TransformComponent_SetScale = void (*)(Handle entityId, float x, float y, float z);
+    using TransformComponent_SetScale = void (*)(Handle entityHandle, float x, float y, float z);
     extern TransformComponent_SetScale transformComponent_SetScale;
     /// SPRITE RENDERER COMPONENT
     using SpriteRendererComponent_GetColor =
-        void (*)(Handle entityId, float *r, float *g, float *b, float *a);
+        void (*)(Handle entityHandle, float *r, float *g, float *b, float *a);
     extern SpriteRendererComponent_GetColor spriteRendererComponent_GetColor;
     using SpriteRendererComponent_SetColor =
-        void (*)(Handle entityId, float r, float g, float b, float a);
+        void (*)(Handle entityHandle, float r, float g, float b, float a);
     extern SpriteRendererComponent_SetColor spriteRendererComponent_SetColor;
-    using SpriteRendererComponent_GetMaterial = void (*)(Handle entityId, Handle *materialId);
+    using SpriteRendererComponent_GetMaterial =
+        void (*)(Handle entityHandle, Handle *materialHandle);
     extern SpriteRendererComponent_GetMaterial spriteRendererComponent_GetMaterial;
-    using SpriteRendererComponent_SetMaterial = void (*)(Handle entityId, Handle materialId);
+    using SpriteRendererComponent_SetMaterial =
+        void (*)(Handle entityHandle, Handle materialHandle);
     extern SpriteRendererComponent_SetMaterial spriteRendererComponent_SetMaterial;
     using SpriteRendererComponent_SetCell =
-        void (*)(Handle entityId, int cols, int rows, int index);
+        void (*)(Handle entityHandle, int cols, int rows, int index);
     extern SpriteRendererComponent_SetCell spriteRendererComponent_SetCell;
+    /// MESH COMPONENT
+    using MeshComponent_GetMesh = void (*)(Handle entityHandle, Handle *meshHandle);
+    extern MeshComponent_GetMesh meshComponent_GetMesh;
+    using MeshComponent_SetMesh = void (*)(Handle entityHandle, Handle meshHandle);
+    extern MeshComponent_SetMesh meshComponent_SetMesh;
     /// RIGIDBODY2D COMPONENT
-    using Rigidbody2DComponent_applyForce = void (*)(Handle entityId, float x, float y);
-    extern Rigidbody2DComponent_applyForce rigidbody2DComponent_applyForce;
-    using Rigidbody2DComponent_applyLinearImpulse = void (*)(Handle entityId, float x, float y);
-    extern Rigidbody2DComponent_applyLinearImpulse rigidbody2DComponent_applyLinearImpulse;
-    using Rigidbody2DComponent_getLinearVelocity = void (*)(Handle entityId, float *x, float *y);
-    extern Rigidbody2DComponent_getLinearVelocity rigidbody2DComponent_getLinearVelocity;
-    using Rigidbody2DComponent_setLinearVelocity = void (*)(Handle entityId, float x, float y);
-    extern Rigidbody2DComponent_setLinearVelocity rigidbody2DComponent_setLinearVelocity;
-    using Rigidbody2DComponent_getMass = void (*)(Handle entityId, float *mass);
-    extern Rigidbody2DComponent_getMass rigidbody2DComponent_getMass;
-    using Rigidbody2DComponent_getFriction = void (*)(Handle entityId, float *friction);
-    extern Rigidbody2DComponent_getFriction rigidbody2DComponent_getFriction;
-    using Rigidbody2DComponent_setFriction = void (*)(Handle entityId, float friction);
-    extern Rigidbody2DComponent_setFriction rigidbody2DComponent_setFriction;
+    using Rigidbody2DComponent_ApplyForce = void (*)(Handle entityHandle, float x, float y);
+    extern Rigidbody2DComponent_ApplyForce rigidbody2DComponent_ApplyForce;
+    using Rigidbody2DComponent_ApplyLinearImpulse = void (*)(Handle entityHandle, float x, float y);
+    extern Rigidbody2DComponent_ApplyLinearImpulse rigidbody2DComponent_ApplyLinearImpulse;
+    using Rigidbody2DComponent_GetLinearVelocity =
+        void (*)(Handle entityHandle, float *x, float *y);
+    extern Rigidbody2DComponent_GetLinearVelocity rigidbody2DComponent_GetLinearVelocity;
+    using Rigidbody2DComponent_SetLinearVelocity = void (*)(Handle entityHandle, float x, float y);
+    extern Rigidbody2DComponent_SetLinearVelocity rigidbody2DComponent_SetLinearVelocity;
+    using Rigidbody2DComponent_GetMass = void (*)(Handle entityHandle, float *mass);
+    extern Rigidbody2DComponent_GetMass rigidbody2DComponent_GetMass;
+    using Rigidbody2DComponent_GetFriction = void (*)(Handle entityHandle, float *friction);
+    extern Rigidbody2DComponent_GetFriction rigidbody2DComponent_GetFriction;
+    using Rigidbody2DComponent_SetFriction = void (*)(Handle entityHandle, float friction);
+    extern Rigidbody2DComponent_SetFriction rigidbody2DComponent_SetFriction;
     /// MATERIAL
-    using Material_SetFloatValue = void (*)(Handle materialId, const char *name, float value);
+    using Material_SetFloatValue = void (*)(Handle materialHandle, const char *name, float value);
     extern Material_SetFloatValue material_SetFloatValue;
     using Material_SetVec4Value =
-        void (*)(Handle materialId, const char *name, float r, float g, float b, float a);
+        void (*)(Handle materialHandle, const char *name, float r, float g, float b, float a);
     extern Material_SetVec4Value material_SetVec4Value;
     using Material_SetTextureValue =
-        void (*)(Handle materialId, const char *name, Handle textureId);
+        void (*)(Handle materialHandle, const char *name, Handle textureHandle);
     extern Material_SetTextureValue material_SetTextureValue;
+    /// MESH
+    using Mesh_Create = void (*)(Handle *handle);
+    extern Mesh_Create mesh_Create;
+    using Mesh_Update = void (*)(
+        Handle handle,
+        const void *vertices,
+        uint32_t verticesCount,
+        const void *indices,
+        uint32_t indicesCount
+    );
+    extern Mesh_Update mesh_Update;
+    using Mesh_SetMaterial = void (*)(Handle meshHandle, Handle materialHandle);
+    extern Mesh_SetMaterial mesh_SetMaterial;
+    using Mesh_Delete = void (*)(Handle meshHandle);
+    extern Mesh_Delete mesh_Delete;
     /// LOG
     using Console_Log = void (*)(int type, const char *);
     extern Console_Log console_Log;
