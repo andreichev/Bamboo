@@ -13,4 +13,8 @@ const char *Entity::getName() {
     return Panda::ExternalCalls::entity_GetName(m_handle.id);
 }
 
+void Entity::createComponent(const std::string &name) {
+    Panda::ExternalCalls::entity_CreateComponent(m_handle.id, name.c_str());
+}
+
 } // namespace Bamboo

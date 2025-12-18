@@ -76,9 +76,9 @@ namespace InternalCalls {
         return Bamboo::getScriptRegistry()->instantiate(entity, name);
     }
 
-    void invokeUpdateAtScript(Handle handle, float deltaTime) {
+    void invokeUpdateAtScript(Handle entityHandle, Handle scriptID, float deltaTime) {
         Bamboo::Shared<Bamboo::Script> script =
-            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
+            Bamboo::getScriptRegistry()->getEntryWithId(entityHandle, scriptID).script;
         if (!script) {
             // assert(false);
             return;
@@ -86,9 +86,9 @@ namespace InternalCalls {
         script->update(deltaTime);
     }
 
-    void invokeStartAtScript(Handle handle) {
+    void invokeStartAtScript(Handle entityHandle, Handle scriptID) {
         Bamboo::Shared<Bamboo::Script> script =
-            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
+            Bamboo::getScriptRegistry()->getEntryWithId(entityHandle, scriptID).script;
         if (!script) {
             // assert(false);
             return;
@@ -96,48 +96,54 @@ namespace InternalCalls {
         script->start();
     }
 
-    void invokeBeginCollisionTouch(Handle handle, Handle entityHandle) {
+    void
+    invokeBeginCollisionTouch(Handle entityHandle, Handle scriptID, Handle collisionEntityHandle) {
         Bamboo::Shared<Bamboo::Script> script =
-            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
+            Bamboo::getScriptRegistry()->getEntryWithId(entityHandle, scriptID).script;
         if (!script) {
             // assert(false);
             return;
         }
-        script->beginCollisionTouch(Bamboo::Entity(entityHandle));
+        script->beginCollisionTouch(Bamboo::Entity(collisionEntityHandle));
     }
 
-    void invokeEndCollisionTouch(Handle handle, Handle entityHandle) {
+    void
+    invokeEndCollisionTouch(Handle entityHandle, Handle scriptID, Handle collisionEntityHandle) {
         Bamboo::Shared<Bamboo::Script> script =
-            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
+            Bamboo::getScriptRegistry()->getEntryWithId(entityHandle, scriptID).script;
         if (!script) {
             // assert(false);
             return;
         }
-        script->endCollisionTouch(Bamboo::Entity(entityHandle));
+        script->endCollisionTouch(Bamboo::Entity(collisionEntityHandle));
     }
 
-    void invokeBeginSensorOverlap(Handle handle, Handle entityHandle) {
+    void invokeBeginSensorOverlap(Handle entityHandle, Handle scriptID, Handle sensorEntityHandle) {
         Bamboo::Shared<Bamboo::Script> script =
-            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
+            Bamboo::getScriptRegistry()->getEntryWithId(entityHandle, scriptID).script;
         if (!script) {
             // assert(false);
             return;
         }
-        script->beginSensorOverlap(Bamboo::Entity(entityHandle));
+        script->beginSensorOverlap(Bamboo::Entity(sensorEntityHandle));
     }
 
-    void invokeEndSensorOverlap(Handle handle, Handle entityHandle) {
+    void invokeEndSensorOverlap(Handle entityHandle, Handle scriptID, Handle sensorEntityHandle) {
         Bamboo::Shared<Bamboo::Script> script =
-            Bamboo::getScriptRegistry()->getEntryWithId(handle).script;
+            Bamboo::getScriptRegistry()->getEntryWithId(entityHandle, scriptID).script;
         if (!script) {
             // assert(false);
             return;
         }
-        script->endSensorOverlap(Bamboo::Entity(entityHandle));
+        script->endSensorOverlap(Bamboo::Entity(sensorEntityHandle));
     }
 
-    void setFieldValue(Handle scriptId, FieldHandle fieldId, void *value) {
-        Bamboo::getScriptRegistry()->setFieldValue(scriptId, fieldId, value);
+    void setFieldValue(Handle entityHandle, Handle scriptID, FieldHandle fieldId, void *value) {
+        Bamboo::getScriptRegistry()->setFieldValue(entityHandle, scriptID, fieldId, value);
+    }
+
+    void entityWillBeDeleted(Handle entityHandle) {
+        Bamboo::getScriptRegistry()->entityWillBeDeleted(entityHandle);
     }
 
     ScriptBundleManifest getManifest() {
@@ -158,6 +164,7 @@ void initScriptHook() {
     g_scriptSymbols["invokeEndCollisionTouch"] = (void *)invokeEndCollisionTouch;
     g_scriptSymbols["invokeBeginSensorOverlap"] = (void *)invokeBeginSensorOverlap;
     g_scriptSymbols["invokeEndSensorOverlap"] = (void *)invokeEndSensorOverlap;
+    g_scriptSymbols["entityWillBeDeleted"] = (void *)entityWillBeDeleted;
     g_scriptSymbols["getManifest"] = (void *)getManifest;
 }
 

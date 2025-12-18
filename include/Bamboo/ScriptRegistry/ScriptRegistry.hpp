@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Bamboo/Entity.hpp"
 #include "Bamboo/Logger.hpp"
 #include "Bamboo/Assets/Material.hpp"
 #include "Bamboo/Allocator.hpp"
@@ -26,8 +25,12 @@ private:
         Bamboo::Shared<Bamboo::Script> script;
     };
 
+    struct EntityScripts {
+        std::unordered_map<ScriptID, ScriptEntry> instances;
+    };
+
     std::vector<ScriptClass> m_scriptClasses;
-    std::unordered_map<Handle, ScriptEntry> m_instances;
+    std::unordered_map<Handle, EntityScripts> m_entityScripts;
 
 public:
     ~ScriptRegistry() {
@@ -87,15 +90,26 @@ public:
         m_scriptClasses.emplace_back(clazz);
     }
 
-    ScriptEntry getEntryWithId(Handle id) {
-        if (m_instances.find(id) == m_instances.end()) {
+    EntityScripts getEntityScripts(EntityHandle entityHandle) {
+        if (m_entityScripts.find(entityHandle.id) == m_entityScripts.end()) {
             return {};
         }
-        return m_instances.at(id);
+        return m_entityScripts.at(entityHandle.id);
     }
 
-    void setFieldValue(Handle scriptId, FieldHandle fieldId, void *value) {
-        ScriptEntry scriptEntry = getEntryWithId(scriptId);
+    ScriptEntry getEntryWithId(EntityHandle entityHandle, ScriptID id) {
+        if (m_entityScripts.find(entityHandle.id) == m_entityScripts.end()) {
+            return {};
+        }
+        auto instances = m_entityScripts.at(entityHandle.id).instances;
+        if (instances.find(id) == instances.end()) {
+            return {};
+        }
+        return instances.at(id);
+    }
+
+    void setFieldValue(Handle entityHandle, Handle scriptId, FieldHandle fieldId, void *value) {
+        ScriptEntry scriptEntry = getEntryWithId(entityHandle, scriptId);
         // PND_ASSERT(scriptEntry.script, "Invalid script instance id");
         Handle classHandle = scriptEntry.classHandle;
         // PND_ASSERT(classHandle >= 0 && classHandle < m_scriptClasses.size(), "Invalid class
@@ -141,18 +155,24 @@ public:
         }
     }
 
-    void removeScriptId(Handle id) {
-        if (m_instances.find(id) == m_instances.end()) {
+    void entityWillBeDeleted(Handle entityHandle) {
+        if (m_entityScripts.find(entityHandle) == m_entityScripts.end()) {
             return;
         }
-        m_instances.erase(id);
+        auto scripts = m_entityScripts.at(entityHandle);
+        for (auto [id, entry] : scripts.instances) {
+            entry.script->shutdown();
+        }
+        m_entityScripts.erase(entityHandle);
     }
 
     void clear() {
-        for (auto [handle, instance] : m_instances) {
-            instance.script->shutdown();
+        for (auto [handle, scripts] : m_entityScripts) {
+            for (auto [id, entry] : scripts.instances) {
+                entry.script->shutdown();
+            }
         }
-        m_instances.clear();
+        m_entityScripts.clear();
     }
 
     Handle instantiate(Bamboo::Entity entity, const char *name) {
@@ -160,8 +180,10 @@ public:
             ScriptClass &clazz = m_scriptClasses[classId];
             if (Bamboo::strCmp(name, clazz.name) == 0) {
                 m_lastHandle++;
-                m_instances[m_lastHandle].script = clazz.instantiateFunc(entity);
-                m_instances[m_lastHandle].classHandle = classId;
+                ScriptEntry entry;
+                entry.classHandle = classId;
+                entry.script = clazz.instantiateFunc(entity);
+                m_entityScripts[entity.getHandle().id].instances[m_lastHandle] = entry;
                 return m_lastHandle;
             }
         }

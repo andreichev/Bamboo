@@ -17,6 +17,7 @@ namespace Math {
         float maxSpeed = FLT_MAX
     );
 
-}
+    float degrees(float radians);
+} // namespace Math
 
 } // namespace Bamboo

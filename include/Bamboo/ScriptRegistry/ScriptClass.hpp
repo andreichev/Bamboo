@@ -14,6 +14,7 @@ using InstantiateScriptFunction = Bamboo::Shared<Bamboo::Script> (*)(Bamboo::Ent
 enum class ScriptFieldType { INTEGER, FLOAT, ENTITY, TEXTURE, MATERIAL, UNKNOWN };
 using FieldHandle = uint32_t;
 using Handle = uint32_t;
+using ScriptID = uint32_t;
 
 struct ScriptFieldInfo final {
     constexpr ScriptFieldInfo(

@@ -81,6 +81,10 @@ namespace Math {
         return Vec3(output_x, output_y, output_z);
     }
 
+    float degrees(float radians) {
+        return radians * 57.295779513082320876798154814105;
+    }
+
 } // namespace Math
 
 } // namespace Bamboo
