@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Bamboo/Allocator.hpp"
-#include "Bamboo/Entity.hpp"
 #include "Bamboo/Script.hpp"
 
 #include <string>
@@ -10,7 +9,7 @@
 
 namespace Bamboo {
 
-using InstantiateScriptFunction = Bamboo::Shared<Bamboo::Script> (*)(Bamboo::Entity entity);
+using InstantiateScriptFunction = Bamboo::Shared<Bamboo::Script> (*)(Bamboo::EntityHandle entity);
 enum class ScriptFieldType { INTEGER, FLOAT, ENTITY, TEXTURE, MATERIAL, UNKNOWN };
 using FieldHandle = uint32_t;
 using Handle = uint32_t;

@@ -15,6 +15,10 @@ namespace ExternalCalls {
     extern Application_GetWidth application_GetWidth;
     using Application_GetHeight = uint32_t (*)();
     extern Application_GetHeight application_GetHeight;
+    using Application_IsCursorLocked = bool (*)();
+    extern Application_IsCursorLocked application_IsCursorLocked;
+    using Application_ToggleCursorLock = void (*)();
+    extern Application_ToggleCursorLock application_ToggleCursorLock;
     /// WORLD
     using World_Load = void (*)(const char *name);
     extern World_Load world_Load;
@@ -29,6 +33,14 @@ namespace ExternalCalls {
     extern Input_IsKeyPressed input_IsKeyPressed;
     using Input_IsKeyJustPressed = bool (*)(int key);
     extern Input_IsKeyJustPressed input_IsKeyJustPressed;
+    using Input_IsMouseButtonPressed = bool (*)(int key);
+    extern Input_IsMouseButtonPressed input_IsMouseButtonPressed;
+    using Input_IsMouseButtonJustPressed = bool (*)(int key);
+    extern Input_IsMouseButtonJustPressed input_IsMouseButtonJustPressed;
+    using Input_GetMouseDeltaX = double (*)();
+    extern Input_GetMouseDeltaX input_GetMouseDeltaX;
+    using Input_GetMouseDeltaY = double (*)();
+    extern Input_GetMouseDeltaY input_GetMouseDeltaY;
     /// ENTITY
     using Entity_CreateComponent = void (*)(Handle entityHandle, const char *type);
     extern Entity_CreateComponent entity_CreateComponent;
@@ -44,12 +56,22 @@ namespace ExternalCalls {
     extern TransformComponent_GetPosition transformComponent_GetPosition;
     using TransformComponent_SetPosition = void (*)(Handle entityHandle, float x, float y, float z);
     extern TransformComponent_SetPosition transformComponent_SetPosition;
+    using TransformComponent_Translate = void (*)(Handle entityHandle, float x, float y, float z);
+    extern TransformComponent_Translate transformComponent_Translate;
     using TransformComponent_GetRotationEuler =
         void (*)(Handle entityHandle, float *x, float *y, float *z);
     extern TransformComponent_GetRotationEuler transformComponent_GetRotationEuler;
     using TransformComponent_SetRotationEuler =
         void (*)(Handle entityHandle, float x, float y, float z);
     extern TransformComponent_SetRotationEuler transformComponent_SetRotationEuler;
+    using TransformComponent_GetRotation =
+        void (*)(Handle entityHandle, float *w, float *x, float *y, float *z);
+    extern TransformComponent_GetRotation transformComponent_GetRotation;
+    using TransformComponent_SetRotation =
+        void (*)(Handle entityHandle, float w, float x, float y, float z);
+    extern TransformComponent_SetRotation transformComponent_SetRotation;
+    using TransformComponent_RotateEuler = void (*)(Handle entityHandle, float x, float y, float z);
+    extern TransformComponent_RotateEuler transformComponent_RotateEuler;
     using TransformComponent_GetScale = void (*)(Handle entityHandle, float *x, float *y, float *z);
     extern TransformComponent_GetScale transformComponent_GetScale;
     using TransformComponent_SetScale = void (*)(Handle entityHandle, float x, float y, float z);

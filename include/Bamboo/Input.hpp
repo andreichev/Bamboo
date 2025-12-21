@@ -28,6 +28,8 @@ public:
     static int touchCount();
     static Touch getTouch(int index);
     static double getMousePositionX();
+    static double getMouseDeltaX();
+    static double getMouseDeltaY();
     static double getMousePositionY();
     static double getMouseScrollX();
     static double getMouseScrollY();

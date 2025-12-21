@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Bamboo/Logger.hpp"
-#include "Bamboo/Assets/Material.hpp"
 #include "Bamboo/Allocator.hpp"
 #include "Bamboo/ScriptRegistry/ScriptClass.hpp"
 
@@ -49,13 +48,13 @@ public:
         if constexpr (std::is_same_v<T, float>) {
             return ScriptFieldType::FLOAT;
         }
-        if constexpr (std::is_same_v<T, Bamboo::Entity>) {
+        if constexpr (std::is_same_v<T, Bamboo::EntityHandle>) {
             return ScriptFieldType::ENTITY;
         }
-        if constexpr (std::is_same_v<T, Bamboo::Texture>) {
+        if constexpr (std::is_same_v<T, Bamboo::TextureHandle>) {
             return ScriptFieldType::TEXTURE;
         }
-        if constexpr (std::is_same_v<T, Bamboo::Material>) {
+        if constexpr (std::is_same_v<T, Bamboo::MaterialHandle>) {
             return ScriptFieldType::MATERIAL;
         }
         return ScriptFieldType::UNKNOWN;
@@ -79,10 +78,15 @@ public:
 
     template<typename T>
     void registerScriptClass(const char *name) {
+        for (auto clazz : m_scriptClasses) {
+            if (strCmp(name, clazz.name) == 0) {
+                return;
+            }
+        }
         ScriptClass clazz;
         clazz.name = name;
         addFieldsIfHas<T>(clazz);
-        clazz.instantiateFunc = [](Bamboo::Entity entity) {
+        clazz.instantiateFunc = [](Bamboo::EntityHandle entity) {
             Bamboo::Shared<T> script = Bamboo::makeShared<T>();
             script->m_entity = entity;
             return Bamboo::SharedCast<Script>(script);
@@ -125,7 +129,7 @@ public:
                 break;
             }
             case ScriptFieldType::ENTITY: {
-                using FieldType = Bamboo::Entity;
+                using FieldType = Bamboo::EntityHandle;
                 uint32_t *id = (uint32_t *)value;
                 FieldType value = FieldType(*id);
                 FieldType *field = static_cast<FieldType *>(fieldPtr);
@@ -133,7 +137,7 @@ public:
                 break;
             }
             case ScriptFieldType::TEXTURE: {
-                using FieldType = Bamboo::Texture;
+                using FieldType = Bamboo::TextureHandle;
                 uint32_t *id = (uint32_t *)value;
                 FieldType value = FieldType(*id);
                 FieldType *field = static_cast<FieldType *>(fieldPtr);
@@ -141,7 +145,7 @@ public:
                 break;
             }
             case ScriptFieldType::MATERIAL: {
-                using FieldType = Bamboo::Material;
+                using FieldType = Bamboo::MaterialHandle;
                 uint32_t *id = (uint32_t *)value;
                 FieldType value = FieldType(*id);
                 FieldType *field = static_cast<FieldType *>(fieldPtr);
@@ -175,7 +179,7 @@ public:
         m_entityScripts.clear();
     }
 
-    Handle instantiate(Bamboo::Entity entity, const char *name) {
+    Handle instantiate(Bamboo::EntityHandle entity, const char *name) {
         for (Handle classId = 0; classId < m_scriptClasses.size(); classId++) {
             ScriptClass &clazz = m_scriptClasses[classId];
             if (Bamboo::strCmp(name, clazz.name) == 0) {
@@ -183,7 +187,7 @@ public:
                 ScriptEntry entry;
                 entry.classHandle = classId;
                 entry.script = clazz.instantiateFunc(entity);
-                m_entityScripts[entity.getHandle().id].instances[m_lastHandle] = entry;
+                m_entityScripts[entity.id].instances[m_lastHandle] = entry;
                 return m_lastHandle;
             }
         }

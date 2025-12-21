@@ -16,6 +16,8 @@ namespace ExternalCalls {
     Application_Quit application_Quit = nullptr;
     Application_GetWidth application_GetWidth = nullptr;
     Application_GetHeight application_GetHeight = nullptr;
+    Application_IsCursorLocked application_IsCursorLocked = nullptr;
+    Application_ToggleCursorLock application_ToggleCursorLock = nullptr;
     /// WORLD
     World_Load world_Load = nullptr;
     World_FindByTag world_FindByTag = nullptr;
@@ -24,6 +26,10 @@ namespace ExternalCalls {
     /// INPUT
     Input_IsKeyPressed input_IsKeyPressed = nullptr;
     Input_IsKeyJustPressed input_IsKeyJustPressed = nullptr;
+    Input_IsMouseButtonPressed input_IsMouseButtonPressed = nullptr;
+    Input_IsMouseButtonJustPressed input_IsMouseButtonJustPressed = nullptr;
+    Input_GetMouseDeltaX input_GetMouseDeltaX = nullptr;
+    Input_GetMouseDeltaY input_GetMouseDeltaY = nullptr;
     /// ENTITY
     Entity_CreateComponent entity_CreateComponent = nullptr;
     Entity_HasComponent entity_HasComponent = nullptr;
@@ -32,8 +38,12 @@ namespace ExternalCalls {
     /// TRANSFORM COMPONENT
     TransformComponent_GetPosition transformComponent_GetPosition = nullptr;
     TransformComponent_SetPosition transformComponent_SetPosition = nullptr;
+    TransformComponent_Translate transformComponent_Translate = nullptr;
     TransformComponent_GetRotationEuler transformComponent_GetRotationEuler = nullptr;
     TransformComponent_SetRotationEuler transformComponent_SetRotationEuler = nullptr;
+    TransformComponent_GetRotation transformComponent_GetRotation = nullptr;
+    TransformComponent_SetRotation transformComponent_SetRotation = nullptr;
+    TransformComponent_RotateEuler transformComponent_RotateEuler = nullptr;
     TransformComponent_GetScale transformComponent_GetScale = nullptr;
     TransformComponent_SetScale transformComponent_SetScale = nullptr;
     /// SPRITE RENDERER COMPONENT
@@ -72,7 +82,7 @@ namespace InternalCalls {
     }
 
     Handle instantiateScript(Handle entityHandle, const char *name) {
-        Bamboo::Entity entity = Bamboo::Entity(entityHandle);
+        Bamboo::EntityHandle entity = Bamboo::EntityHandle(entityHandle);
         return Bamboo::getScriptRegistry()->instantiate(entity, name);
     }
 
@@ -104,7 +114,7 @@ namespace InternalCalls {
             // assert(false);
             return;
         }
-        script->beginCollisionTouch(Bamboo::Entity(collisionEntityHandle));
+        script->beginCollisionTouch(Bamboo::EntityHandle(collisionEntityHandle));
     }
 
     void
@@ -115,7 +125,7 @@ namespace InternalCalls {
             // assert(false);
             return;
         }
-        script->endCollisionTouch(Bamboo::Entity(collisionEntityHandle));
+        script->endCollisionTouch(Bamboo::EntityHandle(collisionEntityHandle));
     }
 
     void invokeBeginSensorOverlap(Handle entityHandle, Handle scriptID, Handle sensorEntityHandle) {
@@ -125,7 +135,7 @@ namespace InternalCalls {
             // assert(false);
             return;
         }
-        script->beginSensorOverlap(Bamboo::Entity(sensorEntityHandle));
+        script->beginSensorOverlap(Bamboo::EntityHandle(sensorEntityHandle));
     }
 
     void invokeEndSensorOverlap(Handle entityHandle, Handle scriptID, Handle sensorEntityHandle) {
@@ -135,7 +145,7 @@ namespace InternalCalls {
             // assert(false);
             return;
         }
-        script->endSensorOverlap(Bamboo::Entity(sensorEntityHandle));
+        script->endSensorOverlap(Bamboo::EntityHandle(sensorEntityHandle));
     }
 
     void setFieldValue(Handle entityHandle, Handle scriptID, FieldHandle fieldId, void *value) {
@@ -188,6 +198,9 @@ LIB_EXPORT int loadExternalCalls(SymbolsLoadFunc load) {
     application_Quit = (Application_Quit)load("application_Quit");
     application_GetWidth = (Application_GetWidth)load("application_GetWidth");
     application_GetHeight = (Application_GetHeight)load("application_GetHeight");
+    application_IsCursorLocked = (Application_IsCursorLocked)load("application_IsCursorLocked");
+    application_ToggleCursorLock =
+        (Application_ToggleCursorLock)load("application_ToggleCursorLock");
     /// WORLD
     world_Load = (World_Load)load("world_Load");
     world_FindByTag = (World_FindByTag)load("world_FindByTag");
@@ -197,6 +210,11 @@ LIB_EXPORT int loadExternalCalls(SymbolsLoadFunc load) {
     /// INPUT
     input_IsKeyPressed = (Input_IsKeyPressed)load("input_IsKeyPressed");
     input_IsKeyJustPressed = (Input_IsKeyJustPressed)load("input_IsKeyJustPressed");
+    input_IsMouseButtonPressed = (Input_IsMouseButtonPressed)load("input_IsMouseButtonPressed");
+    input_IsMouseButtonJustPressed =
+        (Input_IsMouseButtonJustPressed)load("input_IsMouseButtonJustPressed");
+    input_GetMouseDeltaX = (Input_GetMouseDeltaX)load("input_GetMouseDeltaX");
+    input_GetMouseDeltaY = (Input_GetMouseDeltaY)load("input_GetMouseDeltaY");
     /// ENTITY
     entity_CreateComponent = (Entity_CreateComponent)load("entity_CreateComponent");
     entity_HasComponent = (Entity_HasComponent)load("entity_HasComponent");
@@ -206,10 +224,18 @@ LIB_EXPORT int loadExternalCalls(SymbolsLoadFunc load) {
         (TransformComponent_GetPosition)load("transformComponent_GetPosition");
     transformComponent_SetPosition =
         (TransformComponent_SetPosition)load("transformComponent_SetPosition");
+    transformComponent_Translate =
+        (TransformComponent_Translate)load("transformComponent_Translate");
     transformComponent_GetRotationEuler =
         (TransformComponent_GetRotationEuler)load("transformComponent_GetRotationEuler");
     transformComponent_SetRotationEuler =
         (TransformComponent_SetRotationEuler)load("transformComponent_SetRotationEuler");
+    transformComponent_GetRotation =
+        (TransformComponent_GetRotation)load("transformComponent_GetRotation");
+    transformComponent_SetRotation =
+        (TransformComponent_SetRotation)load("transformComponent_SetRotation");
+    transformComponent_RotateEuler =
+        (TransformComponent_RotateEuler)load("transformComponent_RotateEuler");
     transformComponent_GetScale = (TransformComponent_GetScale)load("transformComponent_GetScale");
     transformComponent_SetScale = (TransformComponent_SetScale)load("transformComponent_SetScale");
     /// SPRITE RENDERER COMPONENT
