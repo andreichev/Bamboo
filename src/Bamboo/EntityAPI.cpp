@@ -7,13 +7,13 @@ namespace EntityAPI {
     std::string getComponentName(ComponentType type) {
         switch (type) {
             case ComponentType::MESH_COMPONENT:
-                return "MeshComponent";
+                return "Panda::RuntimeMeshComponent";
             case ComponentType::RIGIDBODY_2D_COMPONENT:
-                return "Rigidbody2DComponent";
+                return "Panda::Rigidbody2DComponent";
             case ComponentType::SPRITE_RENDERER_COMPONENT:
-                return "SpriteRendererComponent";
+                return "Panda::SpriteRendererComponent";
             case ComponentType::TRANSFORM_COMPONENT: {
-                return "TransformComponent";
+                return "Panda::TransformComponent";
             }
         }
         return "UnknownComponent";

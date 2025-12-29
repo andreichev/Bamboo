@@ -13,10 +13,6 @@ namespace MeshAPI {
             data.indices.size()
         );
     }
-
-    void setMaterial(MeshHandle handle, MaterialHandle material) {
-        Panda::ExternalCalls::mesh_SetMaterial(handle.id, material.id);
-    }
 } // namespace MeshAPI
 
 } // namespace Bamboo

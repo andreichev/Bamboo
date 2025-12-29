@@ -22,7 +22,6 @@ struct MeshData {
 
 namespace MeshAPI {
     void update(MeshHandle handle, const MeshData &data);
-    void setMaterial(MeshHandle handle, MaterialHandle material);
 }; // namespace MeshAPI
 
 } // namespace Bamboo

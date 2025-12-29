@@ -97,6 +97,8 @@ namespace ExternalCalls {
     extern MeshComponent_GetMesh meshComponent_GetMesh;
     using MeshComponent_SetMesh = void (*)(Handle entityHandle, Handle meshHandle);
     extern MeshComponent_SetMesh meshComponent_SetMesh;
+    using MeshComponent_SetMaterial = void (*)(Handle entityHandle, Handle materialHandle);
+    extern MeshComponent_SetMaterial meshComponent_SetMaterial;
     /// RIGIDBODY2D COMPONENT
     using Rigidbody2DComponent_ApplyForce = void (*)(Handle entityHandle, float x, float y);
     extern Rigidbody2DComponent_ApplyForce rigidbody2DComponent_ApplyForce;
@@ -133,8 +135,6 @@ namespace ExternalCalls {
         uint32_t indicesCount
     );
     extern Mesh_Update mesh_Update;
-    using Mesh_SetMaterial = void (*)(Handle meshHandle, Handle materialHandle);
-    extern Mesh_SetMaterial mesh_SetMaterial;
     using Mesh_Delete = void (*)(Handle meshHandle);
     extern Mesh_Delete mesh_Delete;
     /// LOG

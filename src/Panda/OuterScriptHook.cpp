@@ -55,6 +55,7 @@ namespace ExternalCalls {
     /// MESH COMPONENT
     MeshComponent_GetMesh meshComponent_GetMesh = nullptr;
     MeshComponent_SetMesh meshComponent_SetMesh = nullptr;
+    MeshComponent_SetMaterial meshComponent_SetMaterial = nullptr;
     /// RIGIDBODY2D COMPONENT
     Rigidbody2DComponent_ApplyForce rigidbody2DComponent_ApplyForce = nullptr;
     Rigidbody2DComponent_ApplyLinearImpulse rigidbody2DComponent_ApplyLinearImpulse = nullptr;
@@ -70,7 +71,6 @@ namespace ExternalCalls {
     /// MESH
     Mesh_Create mesh_Create = nullptr;
     Mesh_Update mesh_Update = nullptr;
-    Mesh_SetMaterial mesh_SetMaterial = nullptr;
     Mesh_Delete mesh_Delete = nullptr;
     /// CONSOLE
     Console_Log console_Log = nullptr;
@@ -252,6 +252,7 @@ LIB_EXPORT int loadExternalCalls(SymbolsLoadFunc load) {
     /// MESH COMPONENT
     meshComponent_GetMesh = (MeshComponent_GetMesh)load("meshComponent_GetMesh");
     meshComponent_SetMesh = (MeshComponent_SetMesh)load("meshComponent_SetMesh");
+    meshComponent_SetMaterial = (MeshComponent_SetMaterial)load("meshComponent_SetMaterial");
     /// RIGIDBODY2D COMPONENT
     rigidbody2DComponent_ApplyForce =
         (Rigidbody2DComponent_ApplyForce)load("rigidbody2DComponent_ApplyForce");
@@ -274,7 +275,6 @@ LIB_EXPORT int loadExternalCalls(SymbolsLoadFunc load) {
     /// MESH
     mesh_Create = (Mesh_Create)load("mesh_Create");
     mesh_Update = (Mesh_Update)load("mesh_Update");
-    mesh_SetMaterial = (Mesh_SetMaterial)load("mesh_SetMaterial");
     mesh_Delete = (Mesh_Delete)load("mesh_Delete");
     /// LOG
     console_Log = (Console_Log)load("console_Log");
